@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
   name: {
@@ -38,17 +38,17 @@ const productSchema = new mongoose.Schema({
     required: [true, "Please select category for this product"],
     enum: {
       values: [
-        "Electronic",
-        "Camera",
-        "Laptop",
+        "Electronics",
+        "Cameras",
+        "Laptops",
         "Accessories",
-        "Headphone",
+        "Headphones",
         "Food",
-        "Book",
+        "Books",
         "Clothes/Shoes",
         "Beauty/Health",
         "Sports",
-        "Outdoors",
+        "Outdoor",
         "Home",
       ],
       message: "Please select correct category for product",
@@ -90,5 +90,5 @@ const productSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.models.Product ||
-  mongoose.model("Product", productSchema);
+module.exports =
+  mongoose.models.Product || mongoose.model("Product", productSchema);
