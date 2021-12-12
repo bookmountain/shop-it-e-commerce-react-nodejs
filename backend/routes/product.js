@@ -7,7 +7,7 @@ const {
   getSingleProduct,
   updateProduct,
   deleteProduct,
-} = require("../controllers/productControllers");
+} = require("../controllers/productController");
 
 const { isAuthenticatedUser, authorizeRoles } = require("../middlewares/auth");
 
