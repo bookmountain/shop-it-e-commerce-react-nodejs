@@ -6,10 +6,10 @@ import {
   getProducts,
 } from "../../actions/productActions";
 import { useAlert } from "react-alert";
+import MetaData from "../layout/MetaData";
 import Loader from "../layout/Loader";
 import { useParams } from "react-router-dom";
 import { Carousel } from "react-bootstrap";
-import MetaData from "../layout/MetaData";
 
 const ProductDetails = (props) => {
   const dispatch = useDispatch();

@@ -5,17 +5,25 @@ const catchAsyncError = require("../middlewares/catchAsyncErrors");
 const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
+const cloudinary = require("cloudinary");
 
 // Register a user => /api/v1/register
 exports.registerUser = catchAsyncError(async (req, res, next) => {
+  const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+    folder: "shopit/avatars",
+    width: 150,
+    crop: "scale",
+  });
+
   const { name, email, password } = req.body;
+
   const user = await User.create({
     name,
     email,
     password,
     avatar: {
-      public_id: "ptjysev7e5bygsth6txt",
-      url: "https://res.cloudinary.com/dxdi1outs/image/upload/v1637685044/bookit/avatars/ptjysev7e5bygsth6txt.jpg",
+      public_id: result.public_id,
+      url: result.secure_url,
     },
   });
   sendToken(user, 200, res);
@@ -69,9 +77,7 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
   });
 
   // Create reset password url
-  const resetUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/api/v1/password/reset/${resetToken}`;
+  const resetUrl = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`;
 
   const message = `Your password reset token is as follow: \n\n${resetUrl}\n\nIf you have not 
   requested this email, then ignore it`;
@@ -165,12 +171,29 @@ exports.updatePassword = catchAsyncError(async (req, res, next) => {
 
 // Update user profile = > /api/v1/me/update
 exports.updateProfile = catchAsyncError(async (req, res, next) => {
-  const newUserDate = {
+  const newUserData = {
     name: req.body.name,
     email: req.body.email,
   };
 
-  const user = await User.findByIdAndUpdate(req.user.id, newUserDate, {
+  if (req.body.avatar !== "") {
+    const user = await User.findById(req.user.id);
+    const image_id = user.avatar.public_id;
+    await cloudinary.v2.uploader.destroy(image_id);
+
+    const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+      folder: "shopit/avatars",
+      width: 150,
+      crop: "scale",
+    });
+
+    newUserData.avatar = {
+      public_id: result.public_id,
+      url: result.secure_url,
+    };
+  }
+
+  const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
     new: true,
     runValidators: true,
   });
@@ -182,13 +205,13 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
 
 // Update user profile = > /api/v1/admin/user/:id
 exports.updateUser = catchAsyncError(async (req, res, next) => {
-  const newUserDate = {
+  const newUserData = {
     name: req.body.name,
     email: req.body.email,
     role: req.body.role,
   };
 
-  const user = await User.findByIdAndUpdate(req.params.id, newUserDate, {
+  const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
     new: true,
     runValidators: true,
   });
