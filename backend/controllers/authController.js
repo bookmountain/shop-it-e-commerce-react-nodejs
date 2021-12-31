@@ -77,7 +77,9 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
   });
 
   // Create reset password url
-  const resetUrl = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`;
+  const resetUrl = `${req.protocol}://${req.get(
+    "host"
+  )}/password/reset/${resetToken}`;
 
   const message = `Your password reset token is as follow: \n\n${resetUrl}\n\nIf you have not 
   requested this email, then ignore it`;
@@ -238,11 +240,11 @@ exports.logout = catchAsyncError(async (req, res, next) => {
 
 // Get all users => /api/v1/admin/users
 exports.allUsers = catchAsyncError(async (req, res, next) => {
-  const user = await User.find();
+  const users = await User.find();
 
   res.status(200).json({
     success: true,
-    user,
+    users,
   });
 });
 
@@ -273,6 +275,8 @@ exports.deleteUser = catchAsyncError(async (req, res, next) => {
   }
 
   // Remove avatar from cloudinary
+  const image_id = user.avatar.public_id;
+  await cloudinary.v2.uploader.destroy(image_id);
 
   await user.deleteOne();
 

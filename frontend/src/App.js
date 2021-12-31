@@ -30,6 +30,16 @@ import { loadStripe } from "@stripe/stripe-js";
 import OrderSuccess from "./components/cart/OrderSuccess";
 import ListOrders from "./components/order/ListOrders";
 import OrderDetails from "./components/order/OrderDetails";
+import Dashboard from "./components/admin/Dashboard";
+import ProductList from "./components/admin/ProductList";
+import NewProduct from "./components/admin/NewProduct";
+import { useSelector } from "react-redux";
+import UpdateProduct from "./components/admin/UpdateProduct";
+import OrderList from "./components/admin/OrderList";
+import ProcessOrder from "./components/admin/ProcessOrder";
+import UserList from "./components/admin/UserList";
+import UpdateUser from "./components/admin/UpdateUser";
+import ProductReviews from "./components/admin/ProductReviews";
 
 function App() {
   const [stripeApiKey, setStripeApiKey] = useState("");
@@ -45,6 +55,8 @@ function App() {
     getStripeApiKey();
   }, []);
 
+  const { user, loading } = useSelector((state) => state.auth);
+
   return (
     <Router>
       <div className="App">
@@ -56,7 +68,7 @@ function App() {
 
           <Route path="/cart" component={Cart} exact />
           <ProtectedRoute path="/shipping" component={Shipping} />
-          <ProtectedRoute path="/order/confirm" component={ConfirmOrder} />
+          <ProtectedRoute path="/confirm" component={ConfirmOrder} exact />
           <ProtectedRoute path="/success" component={OrderSuccess} />
 
           {stripeApiKey && (
@@ -80,7 +92,61 @@ function App() {
           <ProtectedRoute path="/orders/me" component={ListOrders} exact />
           <ProtectedRoute path="/order/:id" component={OrderDetails} exact />
         </div>
-        <Footer />
+        <ProtectedRoute
+          path="/dashboard"
+          isAdmin={true}
+          component={Dashboard}
+          exact
+        />
+        <ProtectedRoute
+          path="/admin/products"
+          isAdmin={true}
+          component={ProductList}
+          exact
+        />
+        <ProtectedRoute
+          path="/admin/product"
+          isAdmin={true}
+          component={NewProduct}
+          exact
+        />
+        <ProtectedRoute
+          path="/admin/product/:id"
+          isAdmin={true}
+          component={UpdateProduct}
+          exact
+        />
+        <ProtectedRoute
+          path="/admin/orders"
+          isAdmin={true}
+          component={OrderList}
+          exact
+        />
+        <ProtectedRoute
+          path="/admin/order/:id"
+          isAdmin={true}
+          component={ProcessOrder}
+          exact
+        />
+        <ProtectedRoute
+          path="/admin/users"
+          isAdmin={true}
+          component={UserList}
+          exact
+        />
+        <ProtectedRoute
+          path="/admin/user/:id"
+          isAdmin={true}
+          component={UpdateUser}
+          exact
+        />
+        <ProtectedRoute
+          path="/admin/reviews"
+          isAdmin={true}
+          component={ProductReviews}
+          exact
+        />
+        {!loading && user && user.role !== "admin" && <Footer />}
       </div>
     </Router>
   );

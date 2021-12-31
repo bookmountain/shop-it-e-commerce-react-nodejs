@@ -39,12 +39,12 @@ const Header = () => {
             <span id="cart" className="ml-3">
               Cart
             </span>
-            <span className="ml-1" id="cart_count">
+            <span className="ml-2" id="cart_count">
               {cartItems.length}
             </span>
           </Link>
           {user ? (
-            <div className=" ml-4 dropdown d-inline">
+            <div className=" ml-2 dropdown d-inline">
               <Link
                 to="#"
                 className="btn dropdown-toggle text-white mr-4"
@@ -67,7 +67,7 @@ const Header = () => {
                 className="dropdown-menu"
                 aria-labelledby="dropDownMenuButton"
               >
-                {user && user.role !== `admin` && (
+                {user && user.role === `admin` && (
                   <Link className="dropdown-item" to="/dashboard">
                     Dashboard
                   </Link>

@@ -12,6 +12,7 @@ import { useAlert } from "react-alert";
 import { useDispatch, useSelector } from "react-redux";
 import MetaData from "../layout/MetaData";
 import { clearErrors, createOrder } from "../../actions/orderActions";
+import { clearCart } from "../../actions/cartActions";
 const options = {
   style: {
     base: {
@@ -98,6 +99,8 @@ const Payment = ({ history }) => {
             id: result.paymentIntent.id,
             status: result.paymentIntent.status,
           };
+
+          dispatch(clearCart());
 
           dispatch(createOrder(order));
 
