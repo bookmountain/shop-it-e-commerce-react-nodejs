@@ -13,7 +13,7 @@ const NewProduct = ({ history }) => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("Electronics");
   const [stock, setStock] = useState(0);
   const [seller, setSeller] = useState("");
   const [images, setImages] = useState([]);
@@ -37,7 +37,7 @@ const NewProduct = ({ history }) => {
   const alert = useAlert();
   const dispatch = useDispatch();
 
-  const { loading, error, success } = useSelector((state) => state.product);
+  const { loading, error, success } = useSelector((state) => state.newProduct);
 
   useEffect(() => {
     if (error) {
@@ -120,11 +120,11 @@ const NewProduct = ({ history }) => {
               <div className="form-group">
                 <label htmlFor="price_field">Price</label>
                 <input
-                  type="text"
+                  type="tel"
                   id="price_field"
                   className="form-control"
                   value={price}
-                  onChange={(e) => setPrice(+e.target.value)}
+                  onChange={(e) => setPrice(e.target.value)}
                 />
               </div>
 
@@ -157,11 +157,11 @@ const NewProduct = ({ history }) => {
               <div className="form-group">
                 <label htmlFor="stock_field">Stock</label>
                 <input
-                  type="number"
+                  type="tel"
                   id="stock_field"
                   className="form-control"
                   value={stock}
-                  onChange={(e) => setStock(+e.target.value)}
+                  onChange={(e) => setStock(e.target.value)}
                 />
               </div>
 
